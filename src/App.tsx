@@ -67,28 +67,34 @@ export default function App() {
 
   const handleLogin = async () => {
     try {
-      // Check if we are on mobile or if popup is likely to be blocked
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        await signInWithRedirect(auth, googleProvider);
-      } else {
-        try {
-          await signInWithPopup(auth, googleProvider);
-        } catch (error: any) {
-          console.error("Popup login failed:", error);
-          // Fallback to redirect if popup fails
-          if (error.code === 'auth/popup-blocked' || error.code === 'auth/cancelled-popup-request') {
-            await signInWithRedirect(auth, googleProvider);
-          } else {
-            throw error;
-          }
+      // Always try popup first as it's more reliable in iframes if allowed
+      try {
+        await signInWithPopup(auth, googleProvider);
+      } catch (error: any) {
+        console.error("Popup login failed:", error);
+        
+        // If popup is blocked or we are on mobile, try redirect as fallback
+        if (
+          error.code === 'auth/popup-blocked' || 
+          error.code === 'auth/cancelled-popup-request' ||
+          /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+        ) {
+          await signInWithRedirect(auth, googleProvider);
+        } else {
+          throw error;
         }
       }
     } catch (error) {
       console.error("Login failed:", error);
+      alert("O login falhou. Se você estiver usando o celular dentro de outro app (como WhatsApp ou Instagram), tente abrir o link diretamente no navegador (Chrome ou Safari).");
     }
   };
+
+  const openInNewTab = () => {
+    window.open(window.location.href, '_blank');
+  };
+
+  const isIframe = window.self !== window.top;
 
   if (loading) {
     return (
@@ -112,13 +118,24 @@ export default function App() {
             <Wallet size={24} />
             <span>FinChat</span>
           </div>
-          <button
-            onClick={handleLogin}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded-full font-semibold transition-all flex items-center gap-2 shadow-md"
-          >
-            <LogIn size={18} />
-            Entrar
-          </button>
+          <div className="flex gap-2">
+            {isIframe && (
+              <button
+                onClick={openInNewTab}
+                className="text-emerald-600 p-2 hover:bg-emerald-50 rounded-full transition-colors"
+                title="Abrir em nova aba"
+              >
+                <Zap size={20} />
+              </button>
+            )}
+            <button
+              onClick={handleLogin}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded-full font-semibold transition-all flex items-center gap-2 shadow-md"
+            >
+              <LogIn size={18} />
+              Entrar
+            </button>
+          </div>
         </nav>
 
         <main className="flex-1 flex flex-col items-center justify-center p-4 text-center max-w-4xl mx-auto">
@@ -134,6 +151,16 @@ export default function App() {
             <p className="text-lg text-gray-600 max-w-xl mx-auto leading-relaxed">
               A maneira inteligente de gerenciar seu dinheiro. Converse com nossa IA para registrar despesas e ver relatórios instantaneamente.
             </p>
+
+            {isIframe && (
+              <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl text-amber-800 text-sm mb-4">
+                <p className="font-semibold flex items-center justify-center gap-2">
+                  <Zap size={16} />
+                  Dica para Celular
+                </p>
+                <p>Se o login não abrir, clique no ícone de raio acima para abrir em uma nova aba.</p>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
               {[
