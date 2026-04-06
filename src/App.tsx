@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth, googleProvider, signInWithPopup, db, OperationType, handleFirestoreError } from './lib/firebase';
+import { auth, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, db, OperationType, handleFirestoreError } from './lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { UserProfile, DEFAULT_CATEGORIES } from './types';
@@ -18,6 +18,11 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'chat' | 'dashboard' | 'settings'>('chat');
 
   useEffect(() => {
+    // Handle redirect result
+    getRedirectResult(auth).catch((error) => {
+      console.error("Redirect login failed:", error);
+    });
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const userDocRef = doc(db, 'users', firebaseUser.uid);
@@ -62,7 +67,24 @@ export default function App() {
 
   const handleLogin = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      // Check if we are on mobile or if popup is likely to be blocked
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        await signInWithRedirect(auth, googleProvider);
+      } else {
+        try {
+          await signInWithPopup(auth, googleProvider);
+        } catch (error: any) {
+          console.error("Popup login failed:", error);
+          // Fallback to redirect if popup fails
+          if (error.code === 'auth/popup-blocked' || error.code === 'auth/cancelled-popup-request') {
+            await signInWithRedirect(auth, googleProvider);
+          } else {
+            throw error;
+          }
+        }
+      }
     } catch (error) {
       console.error("Login failed:", error);
     }
