@@ -19,7 +19,6 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
       if (firebaseUser) {
         const userDocRef = doc(db, 'users', firebaseUser.uid);
         try {
@@ -47,11 +46,15 @@ export default function App() {
           }
         } catch (error) {
           handleFirestoreError(error, OperationType.GET, `users/${firebaseUser.uid}`);
+        } finally {
+          setUser(firebaseUser);
+          setLoading(false);
         }
       } else {
+        setUser(null);
         setProfile(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -82,61 +85,60 @@ export default function App() {
   if (!user || !profile) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <nav className="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
-          <div className="flex items-center gap-2 text-emerald-600 font-bold text-xl">
-            <Wallet size={28} />
-            <span>FinançasChat AI</span>
+        <nav className="p-4 flex justify-between items-center max-w-7xl mx-auto w-full">
+          <div className="flex items-center gap-2 text-emerald-600 font-bold text-lg">
+            <Wallet size={24} />
+            <span>FinChat</span>
           </div>
           <button
             onClick={handleLogin}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full font-semibold transition-all flex items-center gap-2 shadow-lg shadow-emerald-200"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded-full font-semibold transition-all flex items-center gap-2 shadow-md"
           >
-            <LogIn size={20} />
+            <LogIn size={18} />
             Entrar
           </button>
         </nav>
 
-        <main className="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-4xl mx-auto">
+        <main className="flex-1 flex flex-col items-center justify-center p-4 text-center max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-8"
+            className="space-y-4"
           >
-            <h1 className="text-5xl md:text-7xl font-black text-gray-900 tracking-tight">
-              Controle seus gastos como <br />
+            <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
+              Controle seus gastos <br />
               <span className="text-emerald-600">enviando um zap.</span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              A maneira mais inteligente de gerenciar seu dinheiro. Basta conversar com nossa IA para registrar despesas, 
-              ver relatórios incríveis e obter insights financeiros instantaneamente.
+            <p className="text-lg text-gray-600 max-w-xl mx-auto leading-relaxed">
+              A maneira inteligente de gerenciar seu dinheiro. Converse com nossa IA para registrar despesas e ver relatórios instantaneamente.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
               {[
-                { icon: <MessageSquare className="text-emerald-500" />, title: "Interface de Chat", desc: "Registro simples inspirado no WhatsApp" },
-                { icon: <Zap className="text-amber-500" />, title: "IA Integrada", desc: "Extração e categorização automática" },
-                { icon: <ShieldCheck className="text-blue-500" />, title: "Seguro", desc: "Dados privados com criptografia do Google" }
+                { icon: <MessageSquare className="text-emerald-500" size={20} />, title: "Chat", desc: "Registro simples" },
+                { icon: <Zap className="text-amber-500" size={20} />, title: "IA", desc: "Categorização automática" },
+                { icon: <ShieldCheck className="text-blue-500" size={20} />, title: "Seguro", desc: "Dados privados" }
               ].map((feature, i) => (
-                <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-left">
-                  <div className="mb-4">{feature.icon}</div>
-                  <h3 className="font-bold text-gray-900 mb-1">{feature.title}</h3>
-                  <p className="text-sm text-gray-500">{feature.desc}</p>
+                <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-left">
+                  <div className="mb-2">{feature.icon}</div>
+                  <h3 className="font-bold text-gray-900 text-sm mb-0.5">{feature.title}</h3>
+                  <p className="text-xs text-gray-500">{feature.desc}</p>
                 </div>
               ))}
             </div>
 
             <button
               onClick={handleLogin}
-              className="mt-12 bg-emerald-600 hover:bg-emerald-700 text-white px-10 py-4 rounded-full text-lg font-bold transition-all transform hover:scale-105 shadow-xl shadow-emerald-200 flex items-center gap-3 mx-auto"
+              className="mt-6 bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-full text-base font-bold transition-all transform hover:scale-105 shadow-lg flex items-center gap-2 mx-auto"
             >
-              Começar Gratuitamente
-              <LogIn size={24} />
+              Começar Agora
+              <LogIn size={20} />
             </button>
           </motion.div>
         </main>
 
-        <footer className="p-8 text-center text-gray-400 text-sm">
-          &copy; 2026 FinançasChat AI. Todos os direitos reservados.
+        <footer className="p-4 text-center text-gray-400 text-xs">
+          &copy; 2026 FinChat. Todos os direitos reservados.
         </footer>
       </div>
     );
@@ -152,7 +154,7 @@ export default function App() {
               <Wallet size={24} />
             </div>
             <div>
-              <h1 className="font-bold leading-tight">FinançasChat AI</h1>
+              <h1 className="font-bold leading-tight">FinChat</h1>
               <p className="text-[10px] opacity-80 uppercase tracking-widest">Assistente Pessoal</p>
             </div>
           </div>

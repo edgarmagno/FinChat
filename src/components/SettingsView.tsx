@@ -170,7 +170,7 @@ export default function SettingsView({ user }: SettingsViewProps) {
         </div>
 
         <div className="text-center">
-          <p className="text-xs text-gray-400">FinançasChat AI v1.0.0</p>
+          <p className="text-xs text-gray-400">FinChat v1.0.0</p>
           <p className="text-xs text-gray-400 mt-1">Protegido por Google AI & Firebase</p>
         </div>
       </div>
