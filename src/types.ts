@@ -28,6 +28,7 @@ export interface UserProfile {
   photoURL: string | null;
   currency: string;
   categories: string[];
+  role: 'admin' | 'user';
   createdAt: Date;
 }
 

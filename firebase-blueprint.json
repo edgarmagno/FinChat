@@ -11,9 +11,10 @@
         "photoURL": { "type": "string" },
         "currency": { "type": "string", "enum": ["BRL", "USD", "EUR"], "description": "Default currency" },
         "categories": { "type": "array", "items": { "type": "string" }, "description": "Custom categories for the user" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
         "createdAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["uid", "email"]
+      "required": ["uid", "email", "role"]
     },
     "Transaction": {
       "title": "Financial Transaction",
