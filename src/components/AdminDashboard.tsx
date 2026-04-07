@@ -11,7 +11,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   
   // New User Form
-  const [newEmail, setNewEmail] = useState('');
+  const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newName, setNewName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
@@ -44,27 +44,14 @@ export default function AdminDashboard() {
     setMessage(null);
 
     try {
-      // Note: This will sign out the admin if not handled carefully in some Firebase versions,
-      // but in standard web SDK it might sign in the new user.
-      // However, we are using the same auth instance.
-      // A better way for a real admin panel is a backend function, 
-      // but for this applet we'll try to handle it.
-      
-      // IMPORTANT: In Firebase Web SDK, createUserWithEmailAndPassword automatically signs in the new user.
-      // To prevent this, we would need Firebase Admin SDK (backend) or a secondary Auth instance.
-      // Since we are in a simplified environment, I will warn the user or use a workaround.
-      
-      // Workaround: We'll tell the admin that creating a user will log them out, 
-      // or we can just use a secondary app instance if possible.
-      // For now, let's just implement the logic and warn.
-      
-      const userCredential = await createUserWithEmailAndPassword(auth, newEmail, newPassword);
+      const email = `${newUsername.toLowerCase()}@finchat.io`;
+      const userCredential = await createUserWithEmailAndPassword(auth, email, newPassword);
       const newUser = userCredential.user;
 
       await setDoc(doc(db, 'users', newUser.uid), {
         uid: newUser.uid,
         displayName: newName,
-        email: newEmail,
+        email: email,
         photoURL: null,
         currency: 'BRL',
         categories: DEFAULT_CATEGORIES,
@@ -72,8 +59,8 @@ export default function AdminDashboard() {
         createdAt: serverTimestamp()
       });
 
-      setMessage({ type: 'success', text: `Usuário ${newEmail} criado com sucesso!` });
-      setNewEmail('');
+      setMessage({ type: 'success', text: `Usuário ${newUsername} criado com sucesso!` });
+      setNewUsername('');
       setNewPassword('');
       setNewName('');
       fetchUsers();
@@ -127,13 +114,13 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-400 uppercase ml-1">E-mail</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase ml-1">Usuário</label>
                   <input
-                    type="email"
+                    type="text"
                     required
-                    value={newEmail}
-                    onChange={(e) => setNewEmail(e.target.value)}
-                    placeholder="email@exemplo.com"
+                    value={newUsername}
+                    onChange={(e) => setNewUsername(e.target.value)}
+                    placeholder="ex: joao123"
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm"
                   />
                 </div>
@@ -192,7 +179,7 @@ export default function AdminDashboard() {
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Buscar por nome ou e-mail..."
+                    placeholder="Buscar por nome ou usuário..."
                     className="bg-gray-50 border border-gray-200 rounded-xl py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm w-full md:w-64"
                   />
                 </div>
@@ -202,8 +189,8 @@ export default function AdminDashboard() {
                 <table className="w-full text-left">
                   <thead>
                     <tr className="bg-gray-50 text-gray-400 text-[10px] uppercase tracking-wider font-bold">
+                      <th className="px-6 py-4">Nome</th>
                       <th className="px-6 py-4">Usuário</th>
-                      <th className="px-6 py-4">E-mail</th>
                       <th className="px-6 py-4">Função</th>
                       <th className="px-6 py-4">Criado em</th>
                     </tr>
@@ -236,7 +223,7 @@ export default function AdminDashboard() {
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-1.5 text-sm text-gray-500">
                               <Mail size={14} />
-                              {u.email}
+                              {u.email?.split('@')[0]}
                             </div>
                           </td>
                           <td className="px-6 py-4">

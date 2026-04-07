@@ -114,7 +114,7 @@ export default function SettingsView({ user }: SettingsViewProps) {
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-900">{user.displayName || 'Usuário'}</h3>
-              <p className="text-sm text-gray-500">{user.email}</p>
+              <p className="text-sm text-gray-500">@{user.email?.split('@')[0]}</p>
             </div>
           </div>
 

@@ -19,10 +19,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'chat' | 'dashboard' | 'settings' | 'admin'>('chat');
   
   // Login Form State
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
@@ -32,12 +30,12 @@ export default function App() {
         const userDocRef = doc(db, 'users', firebaseUser.uid);
         try {
           const userDoc = await getDoc(userDocRef);
-          const isAdminEmail = firebaseUser.email === 'admin@finchat.com';
+          const isAdminUser = firebaseUser.email === 'admin@finchat.io';
           
           if (userDoc.exists()) {
             const data = userDoc.data();
-            // Force admin role if it's the admin email but role is wrong
-            if (isAdminEmail && data.role !== 'admin') {
+            // Force admin role if it's the admin user but role is wrong
+            if (isAdminUser && data.role !== 'admin') {
               await setDoc(userDocRef, { ...data, role: 'admin' }, { merge: true });
               setProfile({ ...data, role: 'admin', createdAt: data.createdAt?.toDate() || new Date() } as UserProfile);
             } else {
@@ -49,12 +47,12 @@ export default function App() {
           } else {
             const newProfile: UserProfile = {
               uid: firebaseUser.uid,
-              displayName: isAdminEmail ? 'Administrador' : (displayName || firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Usuário'),
+              displayName: isAdminUser ? 'Administrador' : (firebaseUser.email?.split('@')[0] || 'Usuário'),
               email: firebaseUser.email,
               photoURL: null,
               currency: 'BRL',
               categories: DEFAULT_CATEGORIES,
-              role: isAdminEmail ? 'admin' : 'user',
+              role: isAdminUser ? 'admin' : 'user',
               createdAt: new Date()
             };
             await setDoc(userDocRef, {
@@ -64,7 +62,7 @@ export default function App() {
             setProfile(newProfile);
           }
           
-          if (isAdminEmail) {
+          if (isAdminUser) {
             setActiveTab('admin');
           }
         } catch (error) {
@@ -81,35 +79,41 @@ export default function App() {
     });
 
     return () => unsubscribe();
-  }, [displayName]);
+  }, []);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
     setLoading(true);
 
+    // Map username to dummy email
+    const email = username.includes('@') ? username : `${username.toLowerCase()}@finchat.io`;
+
     try {
-      if (isRegistering) {
-        console.log("Attempting to register:", email);
-        await createUserWithEmailAndPassword(auth, email, password);
-      } else {
-        console.log("Attempting to login:", email);
-        await signInWithEmailAndPassword(auth, email, password);
-      }
+      console.log("Attempting to login:", email);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
       console.error("Auth failed:", error);
-      let message = "Ocorreu um erro na autenticação.";
+      
+      // Bootstrap admin if it doesn't exist
+      if (username.toLowerCase() === 'admin' && password === '123456' && error.code === 'auth/user-not-found') {
+        try {
+          console.log("Bootstrapping admin account...");
+          await createUserWithEmailAndPassword(auth, email, password);
+          return; // onAuthStateChanged will handle the rest
+        } catch (createError) {
+          console.error("Admin bootstrap failed:", createError);
+        }
+      }
+
+      let message = "Usuário ou senha incorretos.";
       
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-        message = "E-mail ou senha incorretos.";
-      } else if (error.code === 'auth/email-already-in-use') {
-        message = "Este e-mail já está em uso.";
-      } else if (error.code === 'auth/weak-password') {
-        message = "A senha deve ter pelo menos 6 caracteres.";
+        message = "Usuário ou senha incorretos.";
       } else if (error.code === 'auth/invalid-email') {
-        message = "E-mail inválido.";
+        message = "Usuário inválido.";
       } else if (error.code === 'auth/operation-not-allowed') {
-        message = "O login por e-mail/senha não está ativado no console do Firebase. Por favor, ative-o em Authentication > Sign-in method.";
+        message = "O login por e-mail/senha não está ativado no console do Firebase.";
       } else if (error.code === 'auth/too-many-requests') {
         message = "Muitas tentativas malsucedidas. Tente novamente mais tarde.";
       }
@@ -191,41 +195,24 @@ export default function App() {
             >
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-gray-900">
-                  {isRegistering ? 'Criar Conta' : 'Bem-vindo de volta'}
+                  Acesso Restrito
                 </h2>
                 <p className="text-gray-500 text-sm mt-1">
-                  {isRegistering ? 'Cadastre-se para começar a usar o FinChat' : 'Entre com suas credenciais para continuar'}
+                  Entre com seu usuário e senha para continuar
                 </p>
               </div>
 
               <form onSubmit={handleAuth} className="space-y-4">
-                {isRegistering && (
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400 uppercase ml-1">Nome Completo</label>
-                    <div className="relative">
-                      <UserPlus className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                      <input
-                        type="text"
-                        required
-                        value={displayName}
-                        onChange={(e) => setDisplayName(e.target.value)}
-                        placeholder="Seu nome"
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
-                      />
-                    </div>
-                  </div>
-                )}
-
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-400 uppercase ml-1">E-mail</label>
+                  <label className="text-xs font-bold text-gray-400 uppercase ml-1">Usuário</label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
-                      type="email"
+                      type="text"
                       required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="seu@email.com"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="admin"
                       className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
                     />
                   </div>
@@ -268,24 +255,12 @@ export default function App() {
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
                     <>
-                      {isRegistering ? <UserPlus size={20} /> : <LogIn size={20} />}
-                      {isRegistering ? 'Criar Conta' : 'Entrar'}
+                      <LogIn size={20} />
+                      Entrar
                     </>
                   )}
                 </button>
               </form>
-
-              <div className="mt-6 text-center">
-                <button
-                  onClick={() => {
-                    setIsRegistering(!isRegistering);
-                    setAuthError(null);
-                  }}
-                  className="text-emerald-600 text-sm font-semibold hover:underline"
-                >
-                  {isRegistering ? 'Já tem uma conta? Entre aqui' : 'Não tem uma conta? Cadastre-se'}
-                </button>
-              </div>
             </motion.div>
           </div>
         </main>
