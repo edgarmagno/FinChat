@@ -81,6 +81,14 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (profile?.darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [profile?.darkMode]);
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
@@ -341,14 +349,17 @@ export default function App() {
                 exit={{ opacity: 0, x: -20 }}
                 className="absolute inset-0"
               >
-                <SettingsView user={profile} />
+                <SettingsView 
+                  user={profile} 
+                  onUpdateProfile={(newProfile) => setProfile(newProfile)}
+                />
               </motion.div>
             )}
           </AnimatePresence>
         </main>
 
         {/* Bottom Navigation */}
-        <nav className="bg-white border-t border-gray-200 flex justify-around p-2 pb-safe relative z-20">
+        <nav className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around p-2 pb-safe relative z-20 transition-colors">
           {[
             ...(profile?.role === 'admin' ? [{ id: 'admin', icon: <ShieldCheck size={24} />, label: 'Admin' }] : []),
             { id: 'chat', icon: <MessageSquare size={24} />, label: 'Conversa' },
@@ -360,7 +371,9 @@ export default function App() {
               onClick={() => setActiveTab(tab.id as any)}
               className={cn(
                 "flex flex-col items-center gap-1 px-6 py-1 rounded-xl transition-all",
-                activeTab === tab.id ? "text-emerald-600 bg-emerald-50" : "text-gray-400 hover:text-gray-600"
+                activeTab === tab.id 
+                  ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20" 
+                  : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
               )}
             >
               {tab.icon}

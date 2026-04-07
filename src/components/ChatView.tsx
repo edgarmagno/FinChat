@@ -112,9 +112,9 @@ export default function ChatView({ user }: ChatViewProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#efeae2] relative overflow-hidden">
+    <div className="flex flex-col h-full bg-[#efeae2] dark:bg-gray-950 relative overflow-hidden transition-colors">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.05] pointer-events-none" 
+      <div className="absolute inset-0 opacity-[0.05] dark:opacity-[0.02] pointer-events-none" 
            style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")' }} />
 
       {/* Messages Area */}
@@ -128,15 +128,15 @@ export default function ChatView({ user }: ChatViewProps) {
               className={cn(
                 "max-w-[85%] rounded-lg p-3 shadow-sm text-sm relative",
                 msg.sender === 'user' 
-                  ? "ml-auto bg-[#dcf8c6] text-gray-800 rounded-tr-none" 
-                  : "mr-auto bg-white text-gray-800 rounded-tl-none"
+                  ? "ml-auto bg-[#dcf8c6] dark:bg-emerald-900/40 text-gray-800 dark:text-emerald-50 rounded-tr-none" 
+                  : "mr-auto bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-tl-none"
               )}
             >
               <div className="flex items-start gap-2">
-                {msg.sender === 'ai' && <Bot size={16} className="text-emerald-600 mt-0.5 shrink-0" />}
+                {msg.sender === 'ai' && <Bot size={16} className="text-emerald-600 dark:text-emerald-400 mt-0.5 shrink-0" />}
                 <div className="flex flex-col">
                   <p className="whitespace-pre-wrap">{msg.text}</p>
-                  <span className="text-[10px] text-gray-400 self-end mt-1">
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500 self-end mt-1">
                     {format(msg.timestamp, 'HH:mm')}
                   </span>
                 </div>
@@ -145,8 +145,8 @@ export default function ChatView({ user }: ChatViewProps) {
           ))}
         </AnimatePresence>
         {isProcessing && (
-          <div className="mr-auto bg-white text-gray-800 rounded-lg rounded-tl-none p-3 shadow-sm text-sm flex items-center gap-2">
-            <Loader2 size={16} className="animate-spin text-emerald-600" />
+          <div className="mr-auto bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg rounded-tl-none p-3 shadow-sm text-sm flex items-center gap-2">
+            <Loader2 size={16} className="animate-spin text-emerald-600 dark:text-emerald-400" />
             <span>Processando...</span>
           </div>
         )}
@@ -154,14 +154,14 @@ export default function ChatView({ user }: ChatViewProps) {
       </div>
 
       {/* Input Area */}
-      <div className="bg-[#f0f2f5] p-3 relative z-10 border-t border-gray-200">
+      <div className="bg-[#f0f2f5] dark:bg-gray-900 p-3 relative z-10 border-t border-gray-200 dark:border-gray-800">
         <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto flex gap-2">
           <input
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Digite uma mensagem (ex: 'Gastei 50 com comida')"
-            className="flex-1 bg-white rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 shadow-sm"
+            className="flex-1 bg-white dark:bg-gray-800 dark:text-white rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 shadow-sm border border-transparent dark:border-gray-700"
             disabled={isProcessing}
           />
           <button

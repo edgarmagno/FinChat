@@ -29,6 +29,7 @@ export interface UserProfile {
   currency: string;
   categories: string[];
   role: 'admin' | 'user';
+  darkMode?: boolean;
   createdAt: Date;
 }
 

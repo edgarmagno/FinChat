@@ -68,7 +68,8 @@ service cloud.firestore {
              (data.displayName == null || data.displayName is string) &&
              (data.photoURL == null || data.photoURL is string) &&
              (data.currency == null || data.currency in ['BRL', 'USD', 'EUR']) &&
-             (data.categories == null || data.categories is list);
+             (data.categories == null || data.categories is list) &&
+             (data.darkMode == null || data.darkMode is bool);
     }
 
     function isValidTransaction(data) {

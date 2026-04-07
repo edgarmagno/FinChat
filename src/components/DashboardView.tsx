@@ -69,19 +69,19 @@ export default function DashboardView({ user }: DashboardViewProps) {
   }, [stats]);
 
   return (
-    <div className="flex-1 bg-gray-50 overflow-y-auto p-4 md:p-6">
+    <div className="flex-1 bg-gray-50 dark:bg-gray-900 overflow-y-auto p-4 md:p-6 transition-colors">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header & Filter */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h1 className="text-2xl font-bold text-gray-900">Visão Geral Financeira</h1>
-          <div className="flex bg-white rounded-lg p-1 shadow-sm border border-gray-200">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Visão Geral Financeira</h1>
+          <div className="flex bg-white dark:bg-gray-800 rounded-lg p-1 shadow-sm border border-gray-200 dark:border-gray-700">
             {(['current', 'last', 'all'] as const).map((range) => (
               <button
                 key={range}
                 onClick={() => setDateRange(range)}
                 className={cn(
                   "px-4 py-1.5 text-sm font-medium rounded-md transition-colors",
-                  dateRange === range ? "bg-emerald-600 text-white" : "text-gray-600 hover:bg-gray-100"
+                  dateRange === range ? "bg-emerald-600 text-white" : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                 )}
               >
                 {range === 'current' ? 'Este Mês' : range === 'last' ? 'Mês Passado' : 'Tudo'}
@@ -92,31 +92,31 @@ export default function DashboardView({ user }: DashboardViewProps) {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-            <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center gap-4">
+            <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center">
               <TrendingUp size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">Receita Total</p>
-              <p className="text-2xl font-bold text-gray-900">{user.currency} {stats.income.toLocaleString()}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Receita Total</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{user.currency} {stats.income.toLocaleString()}</p>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-            <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center gap-4">
+            <div className="w-12 h-12 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-xl flex items-center justify-center">
               <TrendingDown size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">Despesa Total</p>
-              <p className="text-2xl font-bold text-gray-900">{user.currency} {stats.expenses.toLocaleString()}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Despesa Total</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{user.currency} {stats.expenses.toLocaleString()}</p>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center gap-4">
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center">
               <Wallet size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">Saldo Líquido</p>
-              <p className={cn("text-2xl font-bold", stats.balance >= 0 ? "text-emerald-600" : "text-rose-600")}>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Saldo Líquido</p>
+              <p className={cn("text-2xl font-bold", stats.balance >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
                 {user.currency} {stats.balance.toLocaleString()}
               </p>
             </div>
@@ -125,8 +125,8 @@ export default function DashboardView({ user }: DashboardViewProps) {
 
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Despesas por Categoria</h3>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Despesas por Categoria</h3>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -143,22 +143,28 @@ export default function DashboardView({ user }: DashboardViewProps) {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: '#fff' }}
+                    itemStyle={{ color: '#fff' }}
+                  />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Receita vs Despesas</h3>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Receita vs Despesas</h3>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={barData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#374151" />
                   <XAxis dataKey="name" hide />
-                  <YAxis />
-                  <Tooltip />
+                  <YAxis stroke="#9ca3af" />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: '#fff' }}
+                    itemStyle={{ color: '#fff' }}
+                  />
                   <Legend />
                   <Bar dataKey="income" name="Receita" fill="#10b981" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="expenses" name="Despesas" fill="#ef4444" radius={[4, 4, 0, 0]} />
@@ -169,28 +175,28 @@ export default function DashboardView({ user }: DashboardViewProps) {
         </div>
 
         {/* Recent Transactions List */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">Transações Recentes</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Transações Recentes</h3>
             <Calendar size={20} className="text-gray-400" />
           </div>
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-gray-100 dark:divide-gray-700">
             {filteredTransactions.slice(0, 10).map((tx) => (
-              <div key={tx.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <div key={tx.id} className="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                 <div className="flex items-center gap-4">
                   <div className={cn(
                     "w-10 h-10 rounded-full flex items-center justify-center",
-                    tx.type === 'income' ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-600"
+                    tx.type === 'income' ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400" : "bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400"
                   )}>
                     {tx.type === 'income' ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">{tx.description || tx.category}</p>
-                    <p className="text-xs text-gray-500">{format(tx.date, 'dd/MM/yyyy')}</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{tx.description || tx.category}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{format(tx.date, 'dd/MM/yyyy')}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className={cn("font-bold", tx.type === 'income' ? "text-emerald-600" : "text-rose-600")}>
+                  <p className={cn("font-bold", tx.type === 'income' ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
                     {tx.type === 'income' ? '+' : '-'}{user.currency} {tx.amount.toFixed(2)}
                   </p>
                   <p className="text-xs text-gray-400 capitalize">{tx.category}</p>
@@ -198,7 +204,7 @@ export default function DashboardView({ user }: DashboardViewProps) {
               </div>
             ))}
             {filteredTransactions.length === 0 && (
-              <div className="p-12 text-center text-gray-500">
+              <div className="p-12 text-center text-gray-500 dark:text-gray-400">
                 Nenhuma transação encontrada para este período.
               </div>
             )}

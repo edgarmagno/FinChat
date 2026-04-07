@@ -78,14 +78,14 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="flex-1 bg-gray-50 overflow-y-auto p-4 md:p-8">
+    <div className="flex-1 bg-gray-50 dark:bg-gray-950 overflow-y-auto p-4 md:p-8 transition-colors">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black text-gray-900">Painel do Administrador</h1>
-            <p className="text-gray-500">Gerencie usuários e acessos do FinChat</p>
+            <h1 className="text-3xl font-black text-gray-900 dark:text-white">Painel do Administrador</h1>
+            <p className="text-gray-500 dark:text-gray-400">Gerencie usuários e acessos do FinChat</p>
           </div>
-          <div className="flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-bold">
+          <div className="flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-4 py-2 rounded-full text-sm font-bold">
             <Shield size={18} />
             Modo Admin Ativo
           </div>
@@ -94,53 +94,53 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Create User Form */}
           <div className="lg:col-span-1">
-            <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 sticky top-8">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 sticky top-8">
               <div className="flex items-center gap-2 mb-6">
-                <UserPlus className="text-emerald-600" size={24} />
-                <h2 className="text-xl font-bold text-gray-900">Novo Usuário</h2>
+                <UserPlus className="text-emerald-600 dark:text-emerald-400" size={24} />
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Novo Usuário</h2>
               </div>
 
               <form onSubmit={handleCreateUser} className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-400 uppercase ml-1">Nome</label>
+                  <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase ml-1">Nome</label>
                   <input
                     type="text"
                     required
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                     placeholder="Nome do usuário"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm"
+                    className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm dark:text-white"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-400 uppercase ml-1">Usuário</label>
+                  <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase ml-1">Usuário</label>
                   <input
                     type="text"
                     required
                     value={newUsername}
                     onChange={(e) => setNewUsername(e.target.value)}
                     placeholder="ex: joao123"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm"
+                    className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm dark:text-white"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-400 uppercase ml-1">Senha</label>
+                  <label className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase ml-1">Senha</label>
                   <input
                     type="password"
                     required
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm"
+                    className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm dark:text-white"
                   />
                 </div>
 
                 {message && (
                   <div className={cn(
                     "p-3 rounded-xl text-xs flex items-center gap-2 border",
-                    message.type === 'success' ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-rose-50 text-rose-700 border-rose-100"
+                    message.type === 'success' ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30" : "bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-400 border-rose-100 dark:border-rose-900/30"
                   )}>
                     {message.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
                     {message.text}
@@ -150,12 +150,12 @@ export default function AdminDashboard() {
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 disabled:bg-gray-400 shadow-lg shadow-emerald-100"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 disabled:bg-gray-400 shadow-lg shadow-emerald-100 dark:shadow-none"
                 >
                   {isCreating ? <Loader2 className="animate-spin" size={20} /> : <UserPlus size={20} />}
                   Criar Usuário
                 </button>
-                <p className="text-[10px] text-gray-400 text-center italic">
+                <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center italic">
                   * Criar um usuário irá deslogar você da conta atual.
                 </p>
               </form>
@@ -164,23 +164,23 @@ export default function AdminDashboard() {
 
           {/* Users List */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="p-6 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+              <div className="p-6 border-b border-gray-50 dark:border-gray-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
-                  <Users className="text-gray-400" size={24} />
-                  <h2 className="text-xl font-bold text-gray-900">Usuários Cadastrados</h2>
-                  <span className="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded-full font-bold">
+                  <Users className="text-gray-400 dark:text-gray-500" size={24} />
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Usuários Cadastrados</h2>
+                  <span className="bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-xs px-2 py-0.5 rounded-full font-bold">
                     {users.length}
                   </span>
                 </div>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={18} />
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Buscar por nome ou usuário..."
-                    className="bg-gray-50 border border-gray-200 rounded-xl py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm w-full md:w-64"
+                    className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-sm w-full md:w-64 dark:text-white"
                   />
                 </div>
               </div>
@@ -188,40 +188,40 @@ export default function AdminDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="bg-gray-50 text-gray-400 text-[10px] uppercase tracking-wider font-bold">
+                    <tr className="bg-gray-50 dark:bg-gray-700/50 text-gray-400 dark:text-gray-500 text-[10px] uppercase tracking-wider font-bold">
                       <th className="px-6 py-4">Nome</th>
                       <th className="px-6 py-4">Usuário</th>
                       <th className="px-6 py-4">Função</th>
                       <th className="px-6 py-4">Criado em</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-50">
+                  <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
                     {loading ? (
                       <tr>
                         <td colSpan={4} className="px-6 py-12 text-center">
-                          <Loader2 className="animate-spin mx-auto text-emerald-600 mb-2" size={32} />
-                          <p className="text-sm text-gray-400">Carregando usuários...</p>
+                          <Loader2 className="animate-spin mx-auto text-emerald-600 dark:text-emerald-400 mb-2" size={32} />
+                          <p className="text-sm text-gray-400 dark:text-gray-500">Carregando usuários...</p>
                         </td>
                       </tr>
                     ) : filteredUsers.length === 0 ? (
                       <tr>
-                        <td colSpan={4} className="px-6 py-12 text-center text-gray-400">
+                        <td colSpan={4} className="px-6 py-12 text-center text-gray-400 dark:text-gray-500">
                           Nenhum usuário encontrado.
                         </td>
                       </tr>
                     ) : (
                       filteredUsers.map((u) => (
-                        <tr key={u.uid} className="hover:bg-gray-50/50 transition-colors">
+                        <tr key={u.uid} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-xs">
+                              <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold text-xs">
                                 {u.displayName?.charAt(0) || u.email?.charAt(0)}
                               </div>
-                              <span className="text-sm font-semibold text-gray-900">{u.displayName || 'Sem nome'}</span>
+                              <span className="text-sm font-semibold text-gray-900 dark:text-white">{u.displayName || 'Sem nome'}</span>
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                            <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
                               <Mail size={14} />
                               {u.email?.split('@')[0]}
                             </div>
@@ -229,12 +229,12 @@ export default function AdminDashboard() {
                           <td className="px-6 py-4">
                             <span className={cn(
                               "text-[10px] font-bold uppercase px-2 py-0.5 rounded-full",
-                              u.role === 'admin' ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"
+                              u.role === 'admin' ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400" : "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
                             )}>
                               {u.role}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-xs text-gray-400">
+                          <td className="px-6 py-4 text-xs text-gray-400 dark:text-gray-500">
                             {u.createdAt.toLocaleDateString('pt-BR')}
                           </td>
                         </tr>
